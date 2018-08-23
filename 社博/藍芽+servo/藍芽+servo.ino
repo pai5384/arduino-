@@ -1,6 +1,7 @@
 #include <SoftwareSerial.h>
 #include <Servo.h> 
 Servo servo1;
+Servo myservo;
 
 #define bRX 11
 #define bTX 12
@@ -11,6 +12,7 @@ byte light_op=0;
 int sensorValue1 = analogRead(A0);
 int sensorValue2 = analogRead(A1);
 int sensorValue3 = analogRead(A2);
+int i=0;
 const int in1Pin=2;
 const int in2Pin=3;
 const int in3Pin=4;
@@ -43,12 +45,13 @@ void setup()
 //  pinMode(TRIGPIN, OUTPUT);  // 觸發腳設定成「輸出」
 //  pinMode(ECHOPIN, INPUT);   // 接收腳設定成「輸入」 
   servo1.attach(SV1);
+   myservo.attach(9);
 } 
 void loop() 
 {
   
   //if(Serial.available())
-  if(mySerial.available())
+  if(mySerial.available()>0)
   {
     //key=Serial.read();
     key=mySerial.read();
@@ -94,8 +97,8 @@ void loop()
       break;
     }      
   }
-  
-  
+  i++;
+  servo(i);  
 }
 
 void GFront()
@@ -103,13 +106,13 @@ void GFront()
     analogWrite(in1Pin,0);
     analogWrite(in2Pin,255); 
     analogWrite(in3Pin,0);
-    analogWrite(in4Pin,255); 
+    analogWrite(in4Pin,248); 
 }
 void GBack()
 {
     analogWrite(in1Pin,255);
     analogWrite(in2Pin,0); 
-    analogWrite(in3Pin,255);
+    analogWrite(in3Pin,248);
     analogWrite(in4Pin,0); 
 }
 void GStop()
@@ -178,5 +181,19 @@ void trace(){
   }
   return;
 }
-
-
+void servo(int i){
+  if(i%3000==0){
+    for(int i = 0; i <= 60; i+=1){
+        myservo.write(i); // 使用write，傳入角度，從0度轉到180度
+        delay(5);
+    }
+    return;
+  }
+	else if(i%4500==0){
+		for(int i = 60; i >= 0; i-=1){
+			myservo.write(i);// 使用write，傳入角度，從180度轉到0度
+			delay(5);
+		}
+		return;
+	}
+}
