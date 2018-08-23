@@ -11,9 +11,7 @@ SoftwareSerial mySerial(bTX,bRX); // RX, TX
 Servo servo1;
 Servo myservo;
 
-int sensorValue1 = analogRead(A0);
-int sensorValue2 = analogRead(A1);
-int sensorValue3 = analogRead(A2);
+int haveTrace = 0;
 long TimeStamp=0;
 const int in1Pin=2;
 const int in2Pin=3;
@@ -47,11 +45,12 @@ void loop() {
 		if(key == '2') GBack();
 		if(key == '3') GRight();
 		if(key == '4') GLeft();
-		if(key == '5') trace();
+		if(key == '5') haveTrace = 1-haveTrace;
 		if(key == 'a') servo1.write(0);
 		if(key == 'b') servo1.write(90);
 		if(key == 'c') servo1.write(180);
 	}
+	if(haveTrace == 1) trace();
 	servo();  
 }
 
@@ -91,44 +90,40 @@ void GRight(){
 }
 
 void trace(){
-	while(true){
-		int d0,d1,d2;
-		int sensorValue1 = analogRead(A0);
-		int sensorValue2 = analogRead(A1);
-		int sensorValue3 = analogRead(A2);
-		if(sensorValue1 >900 ) d0=1; //white 1,black 2;
-		else d0=0;
+	int d0,d1,d2;
+	int sensorValue1 = analogRead(A0);
+	int sensorValue2 = analogRead(A1);
+	int sensorValue3 = analogRead(A2);
+	if(sensorValue1 >900 ) d0=1; //white 1,black 2;
+	else d0=0;
+	
+	if(sensorValue2 >900 ) d1=1;
+	else d1=0;
+	
+	if(sensorValue3 >900 ) d2=1;
+	else d2=0;
+	
+	int  all=d0*4+d1*2+d2*1;
+	switch(all){
+		case 5:
+			GFront(); 
+		break;
 		
-		if(sensorValue2 >900 ) d1=1;
-		else d1=0;
-		
-		if(sensorValue3 >900 ) d2=1;
-		else d2=0;
-		
-		int  all=d0*4+d1*2+d2*1;
-		switch(all){
-			case 5:
-				GFront(); 
-			break;
-			
-			case 1:
-			case 3:
-				GLeft();
-			break;
-			  
-			case 4:
-			case 6:
-				GRight();
-			break; 
-	  
-			case 7:
-			case 0:
-			default:
-				GStop();
-			break;
-		}
-		char key = mySerial.read();
-		if(key=='5')break;
+		case 1:
+		case 3:
+			GLeft();
+		break;
+		  
+		case 4:
+		case 6:
+			GRight();
+		break; 
+  
+		case 7:
+		case 0:
+		default:
+			GStop();
+		break;
 	}
 }
 
