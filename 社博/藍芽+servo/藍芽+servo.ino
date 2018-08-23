@@ -12,7 +12,7 @@ byte light_op=0;
 int sensorValue1 = analogRead(A0);
 int sensorValue2 = analogRead(A1);
 int sensorValue3 = analogRead(A2);
-int i=0;
+int TimeStamp=0;
 const int in1Pin=2;
 const int in2Pin=3;
 const int in3Pin=4;
@@ -97,8 +97,7 @@ void loop()
       break;
     }      
   }
-  i++;
-  servo(i);  
+  servo();  
 }
 
 void GFront()
@@ -181,19 +180,18 @@ void trace(){
   }
   return;
 }
-void servo(int i){
-  if(i%3000==0){
-    for(int i = 0; i <= 60; i+=1){
-        myservo.write(i); // 使用write，傳入角度，從0度轉到180度
-        delay(5);
-    }
-    return;
-  }
-	else if(i%4500==0){
-		for(int i = 60; i >= 0; i-=1){
-			myservo.write(i);// 使用write，傳入角度，從180度轉到0度
-			delay(5);
+
+void servo(){
+	if(TimeStamp > 4500 ){
+		if(TimeStamp%50 == 0){
+			myservo.write((9000-TimeStamp)/50);
 		}
-		return;
 	}
+	else{
+		if(TimeStamp%50 == 0){
+			myservo.write(TimeStamp/50);
+		}
+	}
+	if(TimeStamp == 9000) TimeStamp = 0;
+	else TimeStamp++;
 }
