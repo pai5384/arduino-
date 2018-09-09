@@ -22,22 +22,6 @@ int traceSense() {
   return d0*4 + d1*2 + d2*1;
 }
 
-int allWhite() {
-  int s;
-  for (int t=50; t<=1000; t+=50) {
-    speed(-vl*0.7, vr);
-    delay(t);
-    speed(0,0);
-    s = traceSense();
-    if (s!=7) return s;
-    speed(vl, -vr*0.7);
-    delay(t);
-    speed(0,0);
-    s = traceSense();
-    if (s!=7) return s;
-  }
-}
-
 int trace(float ratio=1.0) {
   int s = traceSense();
 
@@ -71,25 +55,4 @@ int trace(float ratio=1.0) {
 
   return s;
 }
-
-int look_color(){
-  int a3=analogRead(A3);
-  int a4=analogRead(A4);
- 
-
-//  LCDprint1(String(a3)+String(",")+String(a4));
-
-
-  int d3,d4;    //d4左,d5右
-
-  if(a3>thres3) d3=1;
-  else          d3=0;
-  if(a4>thres4) d4=1;
-  else          d4=0;
-
-  int f = d3*2 + d4*1;
-
-  return f;
-}
-
 
